@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle:
-description:
+title: Advance's Notes
+subtitle: Quick blogs 
+description: 你看不出来我只是玩玩吗
 author: ke cao
 language: zh-Hans
 timezone:
@@ -80,3 +80,9 @@ deploy:
   type: git
   repo: git@github.com:caokegege/caokegege.github.io.git
   branch: master
+  
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
