@@ -49,10 +49,10 @@ public static void main(){
 
 链接
 ```
-[文字](url)
+[点这里可以跳转](url)
 ```
 
-[链接](http://note.youdao.com/)
+[点这里可以跳转](http://note.youdao.com/)
 
 
 **这个是加黑字体**
