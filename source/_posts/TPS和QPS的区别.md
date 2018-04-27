@@ -1,10 +1,9 @@
 title: TPS和QPS的区别
 author: ke cao
-date: 2018-04-27 21:30:59
-tags:
-  - markdown
+tags: []
 categories:
-  - markdown
+  - server
+date: 2018-04-27 21:30:00
 ---
 一、TPS：Transactions Per Second（每秒传输的事物处理个数），即服务器每秒处理的事务数。TPS包括一条消息入和一条消息出，加上一次用户数据库访问。（业务TPS = CAPS × 每个呼叫平均TPS）
 
