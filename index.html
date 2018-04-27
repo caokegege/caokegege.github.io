@@ -456,6 +456,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/27/ConcurrentHashMap和CopyOnWriteArrayList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ke cao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Advance's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/27/ConcurrentHashMap和CopyOnWriteArrayList/" itemprop="url">ConcurrentHashMap和CopyOnWriteArrayList</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-27T22:20:00+08:00">
+                2018-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <ol>
+<li>ConcurrentHashMap</li>
+</ol>
+<p>ConcurrentHashMap其实就是线程安全版本的hashMap。简单的解释就是通过把整个Map分为N个Segment（类似HashTable），这样每个HashTable之间就线程就不会发生冲突，可以提供相同的线程安全，但是效率提升N倍，默认提升16倍。<br><img src="http://7xlune.com1.z0.glb.clouddn.com/images/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90ConcurrentHashMap/ConcurrentHashMap.png" alt="image"></p>
+<ol start="2">
+<li>CopyOnWriteArrayList</li>
+</ol>
+<p>2.1 CopyOnWriteArrayList是线程安全版本的ArrayList。</p>
+<p>2.2 什么是CopyOnWrite容器（写的时候复制）<br>CopyOnWrite容器即写时复制的容器。通俗的理解是当我们往一个容器添加元素的时候，不直接往当前容器添加，而是先将当前容器进行Copy，复制出一个新的容器，然后新的容器里添加元素，添加完元素之后，再将原容器的引用指向新的容器。这样做的好处是我们可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器。</p>
+<p>2.3 CopyOnWriteArrayList的实现原理<br>在使用CopyOnWriteArrayList之前，我们先阅读其源码了解下它是如何实现的。 </p>
+<p>2.3.1 写的时候：需要加锁<br>以下代码是向CopyOnWriteArrayList中add方法的实现（向CopyOnWriteArrayList里添加元素），可以发现在添加的时候是需要加锁的，否则多线程写的时候会Copy出N个副本出来。</p>
+<p>2.3.2 读的时候：不需要加锁<br>读的时候不需要加锁，如果读的时候有多个线程正在向CopyOnWriteArrayList添加数据，读还是会读到旧的数据，因为写的时候不会锁住旧的CopyOnWriteArrayList。</p>
+<p>2.4 相对于Arraylist线程安全，相对于vector，第一不会出现迭代器异常，第二提高了效率： </p>
+<p>2.4.1 迭代器异常（快速失败）：<br>java中，集合在遍历的时候，如果内部被修改了会抛出java.util.ConcurrentModificationException错误。list和vector都会抛出</p>
+<p>2.4.2 快速失败<br>快速失败是指某个线程在迭代vector的时候，不允许其他线程修改该vector的内容，这样迭代器迭代出来的结果就会不准确，如用iterator迭代collection的时候，iterator就是另外起的一个线程，它去迭代collection，如果此时用collection.remove(obj)这个方法修改了collection里面的内容的时候，就会出现ConcurrentModificationException异常,这时候该迭代器就快速失败。<br>通俗解释：就好像有一盘饺子，你要数数有几个，在你还没数完，其他人有放入（或拿走）了几个饺子。<br>你就只能重新再数了。本来你数数就很快，但是，就有人比你手更快。</p>
+<p>2.4.3 读的效率提高了<br>由于都操作没有加锁，所以没有线程冲突；但写操作由于加锁，并采取了复制，所以效率更加低。所以此方法适用于读多写少修改少的应用。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/04/27/ConcurrentHashMap和CopyOnWriteArrayList/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/27/HashMap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1118,7 +1279,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
